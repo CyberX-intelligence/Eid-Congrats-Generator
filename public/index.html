@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberX EID Generator</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+
+        
+        :root {
+            --primary: #5c7cff;
+            --primary-dark: #3a56cc;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --text-muted: #9e9e9e;
+            --border-color: #333333;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Aptos', sans-serif;
+            background-color: #121212;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #121212;
+            background-image: url('Cover-image.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            opacity: 0.15; /* Adjust this value to control image visibility */
+            z-index: -1;
+        }
+
+        .container {
+            background-color: rgba(30, 30, 30, 0.85);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 2rem auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+        }
+
+        .card {
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Aptos', sans-serif;
+            background-color: #2a2a2a;
+            color: var(--text);
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(92, 124, 255, 0.25);
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin: 1rem 0;
+        }
+
+        .download-container {
+            margin-top: 1.5rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .download-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--text);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo.png" alt="CyberX Logo" class="logo">
+        </div>
+        <div class="card">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    placeholder="Enter your full name" 
+                    required
+                    autocomplete="off"
+                    autofocus
+                >
+            </div>
+            <div class="loading" id="loadingIndicator" style="display: none;">
+                <i class="fas fa-spinner"></i> Generating your EID...
+            </div>
+
+            <div id="result">
+                <canvas id="eidCanvas"></canvas>
+                <div class="download-container" id="downloadContainer">
+                    <a href="#" id="downloadBtn" class="download-btn">
+                        <i class="fas fa-download"></i> Download EID
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const nameInput = document.getElementById('name');
+        const canvas = document.getElementById('eidCanvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadContainer = document.getElementById('downloadContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Create image object
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = 'cyberx-eid.jpeg';
+        
+        // Show loading state
+        function showLoading(show) {
+            loadingIndicator.style.display = show ? 'block' : 'none';
+        }
+        
+        // Generate EID function
+        function generateEID() {
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                if (downloadContainer) downloadContainer.style.display = 'none';
+                return;
+            }
+            
+            showLoading(true);
+            
+            // Use requestAnimationFrame for smoother UI updates
+            requestAnimationFrame(() => {
+                try {
+                    // Auto-detect if text contains Arabic characters
+                    const isArabic = /[\u0600-\u06FF]/.test(name);
+                    
+                    // Set canvas dimensions to match the image
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Draw the image
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Set text properties
+                    ctx.fillStyle = '#364e9c'; // Dark blue color
+                    ctx.textAlign = 'center';
+                    
+                    // Set name font based on language detection
+                    const nameFontSize = 42;
+                    ctx.font = `bold ${nameFontSize}px Futura, sans-serif`;
+                    
+                    // Position name at 69% from the top
+                    const nameY = canvas.height * 0.695;
+                    
+                    // Add text shadow for better readability
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                    ctx.shadowBlur = 2;
+                    ctx.shadowOffsetX = 1;
+                    ctx.shadowOffsetY = 1;
+                    
+                    // Draw the name
+                    ctx.fillText(name, canvas.width / 2, nameY);
+                    
+                    // Reset shadow
+                    ctx.shadowColor = 'transparent';
+                    
+                    // Prepare download
+                    const dataURL = canvas.toDataURL('image/png');
+                    downloadBtn.href = dataURL;
+                    downloadBtn.download = `cyberx-eid-${name.toLowerCase().replace(/\s+/g, '-')}.png`;
+                    
+                    // Show download button with animation
+                    downloadContainer.classList.add('visible');
+                    
+                    // Scroll to result
+                    setTimeout(() => {
+                        downloadContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 300);
+                    
+                } catch (error) {
+                    console.error('Error generating EID:', error);
+                    alert('An error occurred while generating your EID. Please try again.');
+                } finally {
+                    showLoading(false);
+                }
+            }, 100);
+        }
+        
+        // Generate EID on input
+        nameInput.addEventListener('input', generateEID);
+        
+        // Handle image load
+        img.onload = function() {
+            // Initialize canvas with image dimensions
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Draw the image initially
+            ctx.drawImage(img, 0, 0);
+            
+            // If there's a name, generate the EID
+            if (nameInput.value.trim()) {
+                generateEID();
+            }
+        };
+        
+        // Handle image load error
+        img.onerror = function() {
+            console.error('Failed to load the EID template image');
+            alert('Failed to load the EID template. Please check your internet connection and refresh the page.');
+            showLoading(false);
+        };
+    </script>
+</body>
+</html>
