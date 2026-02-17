@@ -141,12 +141,14 @@
             margin-top: 0.5rem;
             text-align: center;
             opacity: 0;
+            pointer-events: none;
             transition: all 0.3s ease;
             flex-shrink: 0;
         }
 
         .download-container.visible {
             opacity: 1;
+            pointer-events: auto;
             transform: translateY(0);
         }
 
@@ -450,13 +452,27 @@
         img.crossOrigin = 'anonymous';
         img.src = templates[currentTemplate].src;
 
+        // Preload all template images to prevent disappearing
+        const imageCache = {};
+        Object.keys(templates).forEach(key => {
+            const cachedImg = new Image();
+            cachedImg.crossOrigin = 'anonymous';
+            cachedImg.src = templates[key].src;
+            imageCache[key] = cachedImg;
+        });
+
         // Template selection
         function selectTemplate(el) {
             document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('active'));
             el.classList.add('active');
             currentTemplate = el.dataset.template;
 
-            img.src = templates[currentTemplate].src;
+            const cachedImg = imageCache[currentTemplate];
+            if (cachedImg.complete && cachedImg.naturalWidth > 0) {
+                img.src = cachedImg.src;
+            } else {
+                img.src = templates[currentTemplate].src;
+            }
         }
 
         // Show loading state
@@ -469,15 +485,29 @@
             const name = nameInput.value.trim();
 
             if (!name) {
-                if (downloadContainer) downloadContainer.style.display = 'none';
+                downloadContainer.classList.remove('visible');
+                // Redraw template image without name
+                if (img.complete && img.naturalWidth > 0) {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                }
                 return;
             }
 
-            showLoading(true);
+            // Wait for image to be loaded before drawing
+            if (!img.complete || img.naturalWidth === 0) {
+                showLoading(true);
+                img.addEventListener('load', function onceLoaded() {
+                    img.removeEventListener('load', onceLoaded);
+                    showLoading(false);
+                    generateEID();
+                });
+                return;
+            }
 
             const config = templates[currentTemplate];
 
-            // Use requestAnimationFrame for smoother UI updates
             requestAnimationFrame(() => {
                 try {
                     // Set canvas dimensions to match the image
@@ -519,17 +549,15 @@
                 } catch (error) {
                     console.error('Error generating EID:', error);
                     alert('An error occurred while generating your greeting. Please try again.');
-                } finally {
-                    showLoading(false);
                 }
-            }, 100);
+            });
         }
 
         // Generate EID on input
         nameInput.addEventListener('input', generateEID);
 
         // Handle image load
-        img.onload = function() {
+        img.addEventListener('load', function() {
             // Initialize canvas with image dimensions
             canvas.width = img.width;
             canvas.height = img.height;
@@ -541,14 +569,14 @@
             if (nameInput.value.trim()) {
                 generateEID();
             }
-        };
+        });
 
         // Handle image load error
-        img.onerror = function() {
+        img.addEventListener('error', function() {
             console.error('Failed to load the template image');
             alert('Failed to load the template. Please check your internet connection and refresh the page.');
             showLoading(false);
-        };
+        });
     </script>
 </body>
 </html>
