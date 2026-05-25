@@ -6,7 +6,7 @@
     <title>CyberX Greeting Generator</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <!-- Import Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&family=Cairo:wght@400;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -212,6 +212,99 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Font controls */
+        .font-controls-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .font-family-group {
+            flex: 1;
+        }
+
+        .font-size-group {
+            flex: 0 0 140px;
+        }
+
+        .font-size-group label {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .font-size-group label span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .font-buttons {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .font-btn {
+            padding: 0.25rem 0.55rem;
+            font-size: 0.72rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            background: #2a2a2a;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .font-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .font-btn.active {
+            border-color: var(--primary);
+            background: rgba(92, 124, 255, 0.15);
+            color: var(--primary);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        @media (max-width: 640px) {
+            .font-controls-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .font-size-group {
+                flex: unset;
+                width: 100%;
+            }
+        }
+
         /* Template selector */
         .template-selector {
             margin-bottom: 0.75rem;
@@ -385,18 +478,39 @@
                         <img src="ramadan-2.png" alt="Ramadan Kareem 2">
                         <div class="template-label">Ramadan 2</div>
                     </div>
+                    <div class="template-option" data-template="adha-1" onclick="selectTemplate(this)">
+                        <img src="adha-1.png" alt="Eid Al-Adha">
+                        <div class="template-label">Adha 1</div>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input 
-                    type="text" 
-                    id="name" 
-                    placeholder="Enter your full name" 
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
                     required
                     autocomplete="off"
                     autofocus
                 >
+            </div>
+            <div class="form-group">
+                <div class="font-controls-row">
+                    <div class="font-family-group">
+                        <label>Font</label>
+                        <div class="font-buttons">
+                            <button class="font-btn active" data-font="'29LT Bukra', sans-serif">Bukra</button>
+                            <button class="font-btn" data-font="'Cairo', sans-serif">Cairo</button>
+                            <button class="font-btn" data-font="'Tajawal', sans-serif">Tajawal</button>
+                            <button class="font-btn" data-font="'Amiri', serif">Amiri</button>
+                        </div>
+                    </div>
+                    <div class="font-size-group">
+                        <label>Size <span id="fontSizeValue">32</span>px</label>
+                        <input type="range" id="fontSizeSlider" min="14" max="64" value="32">
+                    </div>
+                </div>
             </div>
             <div class="loading" id="loadingIndicator" style="display: none;">
                 <i class="fas fa-spinner"></i> Generating your greeting...
@@ -420,6 +534,7 @@
                 src: 'cyberx-eid2.png',
                 textColor: '#364e9c',
                 fontSize: 32,
+                maxFontSize: 60,
                 nameY: 0.7,
                 nameX: 0.5,
                 shadowColor: 'rgba(0, 0, 0, 0.15)',
@@ -429,6 +544,7 @@
                 src: 'cyberx-eid3.png',
                 textColor: '#ffffff',
                 fontSize: 32,
+                maxFontSize: 60,
                 nameY: 0.72,
                 nameX: 0.68,
                 shadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -438,6 +554,7 @@
                 src: 'cyberx-eid.jpeg',
                 textColor: '#364e9c',
                 fontSize: 42,
+                maxFontSize: 72,
                 nameY: 0.695,
                 nameX: 0.5,
                 shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -447,6 +564,7 @@
                 src: 'ramadan-1.png',
                 textColor: '#ffffff',
                 fontSize: 28,
+                maxFontSize: 52,
                 nameY: 0.72,
                 nameX: 0.5,
                 shadowColor: 'rgba(0, 0, 0, 0.4)',
@@ -456,14 +574,27 @@
                 src: 'ramadan-2.png',
                 textColor: '#ffffff',
                 fontSize: 36,
+                maxFontSize: 64,
                 nameY: 0.73,
                 nameX: 0.8,
                 shadowColor: 'rgba(0, 0, 0, 0.4)',
                 filePrefix: 'cyberx-ramadan'
+            },
+            'adha-1': {
+                src: 'adha-1.png',
+                textColor: '#ffffff',
+                fontSize: 32,
+                maxFontSize: 60,
+                nameY: 0.82,
+                nameX: 0.5,
+                shadowColor: 'rgba(0, 0, 0, 0.4)',
+                filePrefix: 'cyberx-adha'
             }
         };
 
         let currentTemplate = 'cyberx-eid2';
+        let userFontFamily = "'29LT Bukra', sans-serif";
+        let userFontSize = templates['cyberx-eid2'].fontSize;
 
         // DOM Elements
         const nameInput = document.getElementById('name');
@@ -472,6 +603,8 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const downloadContainer = document.getElementById('downloadContainer');
         const loadingIndicator = document.getElementById('loadingIndicator');
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const fontSizeValue = document.getElementById('fontSizeValue');
 
         // Create image object
         const img = new Image();
@@ -493,6 +626,12 @@
             el.classList.add('active');
             currentTemplate = el.dataset.template;
 
+            const config = templates[currentTemplate];
+            fontSizeSlider.max = config.maxFontSize;
+            fontSizeSlider.value = config.fontSize;
+            userFontSize = config.fontSize;
+            fontSizeValue.textContent = config.fontSize;
+
             const cachedImg = imageCache[currentTemplate];
             if (cachedImg.complete && cachedImg.naturalWidth > 0) {
                 img.src = cachedImg.src;
@@ -500,6 +639,27 @@
                 img.src = templates[currentTemplate].src;
             }
         }
+
+        // Font family selection
+        document.querySelectorAll('.font-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                userFontFamily = btn.dataset.font;
+                generateEID();
+            });
+        });
+
+        // Font size slider
+        fontSizeSlider.addEventListener('input', () => {
+            userFontSize = parseInt(fontSizeSlider.value, 10);
+            fontSizeValue.textContent = userFontSize;
+            generateEID();
+        });
+
+        // Init slider for default template
+        fontSizeSlider.max = templates[currentTemplate].maxFontSize;
+        fontSizeSlider.value = templates[currentTemplate].fontSize;
 
         // Show loading state
         function showLoading(show) {
@@ -547,7 +707,7 @@
                     ctx.fillStyle = config.textColor;
                     ctx.textAlign = 'center';
 
-                    ctx.font = `bold ${config.fontSize}px '29LT Bukra', sans-serif`;
+                    ctx.font = `bold ${userFontSize}px ${userFontFamily}`;
 
                     const nameY = canvas.height * config.nameY;
                     const nameX = canvas.width * config.nameX;
