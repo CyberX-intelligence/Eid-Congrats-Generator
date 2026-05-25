@@ -458,7 +458,11 @@
             <div class="form-group template-selector">
                 <label>Choose Template</label>
                 <div class="template-options">
-                    <div class="template-option active" data-template="cyberx-eid2" onclick="selectTemplate(this)">
+                    <div class="template-option active" data-template="adha-1" onclick="selectTemplate(this)">
+                        <img src="adha-1.png" alt="Eid Al-Adha">
+                        <div class="template-label">Adha 1</div>
+                    </div>
+                    <div class="template-option" data-template="cyberx-eid2" onclick="selectTemplate(this)">
                         <img src="cyberx-eid2.png" alt="Eid Mubarak 2">
                         <div class="template-label">Eid Mubarak 2</div>
                     </div>
@@ -477,10 +481,6 @@
                     <div class="template-option" data-template="ramadan-2" onclick="selectTemplate(this)">
                         <img src="ramadan-2.png" alt="Ramadan Kareem 2">
                         <div class="template-label">Ramadan 2</div>
-                    </div>
-                    <div class="template-option" data-template="adha-1" onclick="selectTemplate(this)">
-                        <img src="adha-1.png" alt="Eid Al-Adha">
-                        <div class="template-label">Adha 1</div>
                     </div>
                 </div>
             </div>
@@ -530,6 +530,16 @@
     <script>
         // Template configurations
         const templates = {
+            'adha-1': {
+                src: 'adha-1.png',
+                textColor: '#ffffff',
+                fontSize: 32,
+                maxFontSize: 60,
+                nameY: 0.82,
+                nameX: 0.5,
+                shadowColor: 'rgba(0, 0, 0, 0.4)',
+                filePrefix: 'cyberx-adha'
+            },
             'cyberx-eid2': {
                 src: 'cyberx-eid2.png',
                 textColor: '#364e9c',
@@ -579,22 +589,12 @@
                 nameX: 0.8,
                 shadowColor: 'rgba(0, 0, 0, 0.4)',
                 filePrefix: 'cyberx-ramadan'
-            },
-            'adha-1': {
-                src: 'adha-1.png',
-                textColor: '#ffffff',
-                fontSize: 32,
-                maxFontSize: 60,
-                nameY: 0.82,
-                nameX: 0.5,
-                shadowColor: 'rgba(0, 0, 0, 0.4)',
-                filePrefix: 'cyberx-adha'
             }
         };
 
-        let currentTemplate = 'cyberx-eid2';
+        let currentTemplate = 'adha-1';
         let userFontFamily = "'29LT Bukra', sans-serif";
-        let userFontSize = templates['cyberx-eid2'].fontSize;
+        let userFontSize = templates['adha-1'].fontSize;
 
         // DOM Elements
         const nameInput = document.getElementById('name');
